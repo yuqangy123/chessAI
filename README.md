@@ -1,44 +1,32 @@
-# aichess
+# chessAI
 # 使用alphazero算法打造属于你自己的象棋AI
 
-## 一、每个文件的意义
-collect.py      自我对弈用于数据收集
 
-train.py    用于训练模型
+## 一、深度学习框架及项目说明：
+pytorch和paddle
 
-game.py    实现象棋的逻辑
-
-mcts.py    实现蒙特卡洛树搜索
-
-paddle_net.py，pytorch_net.py   神经网络对走子进行评估
-
-play_with_ai.py  人机对弈print版
-
-UIplay.py   GUI界面人机对弈
+使用蒙特卡洛树+象棋逻辑+神经网络推理出最佳走子，并记录每一步棋局，棋局作为样本用于神经网络训练策略网络和价值网络，labels为棋局走子，策略推理+神经网络两者相辅相成。
+神经网络骨干网络主要是残差块堆叠+卷积抽取以棋盘棋局连续走子表示成的多层的图的特征，策略网络输出层为2086个所有走子集合，价值网络输出当前最佳走子后的价值。
+蒙特卡洛树一次走子要用升级网络进行上千次的推理，所以必须要使用GPU训练！
 
 
-## 二、提供了两个框架的版本进行训练：
-使用pytorch版本请设置config.py 中CONFIG['use_frame'] = 'pytorch'，
-
-使用pytorch版本请设置config.py 中CONFIG['use_frame'] = 'paddle'。
-
-不管是使用哪个框架，都一定要安装gpu版本，而且要用英伟达显卡，因为我们蒙特卡洛一次走此要进行上千次的神经网络推理，所以必须要快！
-
-
-## 三、本项目是多进程同步训练。
-训练时，在终端运行python collect.py用于自我对弈产生数据，这个可以多开。
+## 二、项目为多进程同步训练。
+用redis存储博弈棋局用于训练，训练时，在终端运行python collect.py用于自我对弈产生数据，这个可以多开，我开了4个。
 
 然后，在终端运行python train.py用于模型训练，这个终端只用开一个。
 
+## 三、训练现状
+截止提交项目时已训练了3000 batchs， totoal loss在2.0出头， 策略网络价值0.9+(满值为1)。
+AI已经学会了弃子保将，并且开局几步有了一定的走棋棋风，还需要继续训练下去，训练batch一般以万为单位。
+
+问题：强化学习需要AI进行大量的试错，策略网络也对训练至关重要，前期无法快速形成较高的棋力，有先用专家棋谱进行模仿训练快速提升棋力的想法，但目前找不到大量的专家样本。
+
 ## 四、相关资源链接
-B站视频链接：https://www.bilibili.com/video/BV183411g7GX
 
 知乎文章：https://zhuanlan.zhihu.com/p/528824058?
 
-aistudio上一键可运行项目：https://aistudio.baidu.com/aistudio/projectdetail/4215743 （可以使用免费的V100来进行训练）
 
-## 五、参考与致谢
-本项目主要参考的资料如下，十分感谢大佬们的分享
+## 五、reference
 1、程世东 https://zhuanlan.zhihu.com/p/34433581 （中国象棋cchesszero ）
 
 2、AI在打野 https://aistudio.baidu.com/aistudio/projectdetail/1403398 （用paddle打造的五子棋AI）
@@ -48,5 +36,4 @@ aistudio上一键可运行项目：https://aistudio.baidu.com/aistudio/projectde
 4、书籍：边做边学深度强化学习：PyTorch 程序设计实践
 
 5、书籍：强化学习第二版
-
-后续应该会对该AI继续训练下去，亲手造一个超强的下棋AI简直太酷了！
+】
